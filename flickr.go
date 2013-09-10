@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/mspangler/flickr/io"
+	"github.com/mspangler/go-flickr/io"
 	"os"
 	"runtime/pprof"
 )
