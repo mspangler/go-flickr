@@ -41,7 +41,6 @@ func ScanImages(path string) []string {
 // If path is a new image then save it for processing
 func scan(path string, fileInfo os.FileInfo, err error) error {
 	if isNewImage(path, fileInfo) {
-		fmt.Printf("Found new image: %s\n", path)
 		scanData.NewImages = append(scanData.NewImages, path)
 	}
 	return nil
@@ -86,7 +85,6 @@ func readImageDb() {
 func writeImageDb() {
 	numNewImages := len(scanData.NewImages)
 	if numNewImages > 0 {
-		fmt.Printf("Recording %d new images\n", numNewImages)
 		file, err := os.OpenFile(scanData.ImageDb, os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {
 			panic(err)
