@@ -32,5 +32,5 @@ func doUpload(newImages []string) bool {
 	fmt.Printf("Would you like to upload all %d images to your Flickr account? Y or N?\n", len(newImages))
 	var answer string
 	fmt.Scanf("%s", &answer)
-	return strings.ToLower(answer) == "y"
+	return strings.TrimSpace(strings.ToLower(answer)) == "y"
 }
