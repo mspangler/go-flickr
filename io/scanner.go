@@ -10,31 +10,38 @@ import (
 
 type ScanData struct {
 	ImageDb        string
+	Regex          *regexp.Regexp
 	RecordedImages map[string]bool
 	NewImages      []string
 }
 
 var scanData = initialize()
-var imageMatcher = imageTypeRegex()
 
 // Create our container that will hold our image processing information
 func initialize() *ScanData {
 	data := new(ScanData)
-	data.ImageDb = "images.txt"
+	data.ImageDb = "db"
+	data.Regex = imageTypeRegex()
 	data.RecordedImages = make(map[string]bool)
 	data.NewImages = make([]string, 0)
 	return data
 }
 
+// Currently we only scan for the following image types: jpeg, jpg or png
+func imageTypeRegex() *regexp.Regexp {
+	regex, _ := regexp.Compile("(?i).(jpe?g|png)")
+	return regex
+}
+
 // Scans the directory for new images
 func ScanImages(path string) []string {
 	fmt.Printf("Scanning %s for new image files...\n", path)
-	readImageDb()
+	readDb()
 	err := filepath.Walk(path, scan)
 	if err != nil {
 		fmt.Printf("Errors occured while scanning for new images: %v\n", err)
 	}
-	writeImageDb()
+	writeDb()
 	return scanData.NewImages
 }
 
@@ -49,14 +56,8 @@ func scan(path string, fileInfo os.FileInfo, err error) error {
 // Determines if the file is an image and if we have seen it before
 func isNewImage(path string, fileInfo os.FileInfo) bool {
 	return !fileInfo.IsDir() &&
-		imageMatcher.MatchString(filepath.Ext(path)) &&
+		scanData.Regex.MatchString(filepath.Ext(path)) &&
 		!seenImage(path)
-}
-
-// Currently we only scan for the following image types: jpeg, jpg or png
-func imageTypeRegex() *regexp.Regexp {
-	regex, _ := regexp.Compile("(?i).(jpe?g|png)")
-	return regex
 }
 
 // Determines if we've seen the image before or not
@@ -68,7 +69,7 @@ func seenImage(image string) bool {
 }
 
 // We keep track of the images we've seen in a flat file database; we load it into memory for lookup
-func readImageDb() {
+func readDb() {
 	file, err := os.OpenFile(scanData.ImageDb, os.O_CREATE|os.O_RDONLY, 0666)
 	if err != nil {
 		panic(err)
@@ -82,8 +83,9 @@ func readImageDb() {
 }
 
 // Record the new files so we don't process them again
-func writeImageDb() {
+func writeDb() {
 	numNewImages := len(scanData.NewImages)
+	fmt.Printf("Found %d new images\n", numNewImages)
 	if numNewImages > 0 {
 		file, err := os.OpenFile(scanData.ImageDb, os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {

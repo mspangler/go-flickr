@@ -15,15 +15,14 @@ func main() {
 	newImages := io.ScanImages(Image_Directory)
 	numNewImages := len(newImages)
 	if numNewImages > 0 {
-		fmt.Printf("Found %d new images\n", len(newImages))
 		for _, image := range newImages {
+			// TODO: maybe generate a HTML page to view the new images?
 			fmt.Printf("%s\n", image)
 		}
 		if doUpload(newImages) {
-			fmt.Printf("Attempting to upload all %d images...\n", len(newImages))
+			fmt.Printf("Attempting to upload all %d images...\n", numNewImages)
+			// TODO: authenticate with Flickr & upload images
 		}
-	} else {
-		fmt.Printf("Did not find any new images to upload\n")
 	}
 }
 
