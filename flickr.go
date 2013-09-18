@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/mspangler/go-flickr/api"
 	"github.com/mspangler/go-flickr/io"
 	"strings"
 )
@@ -22,6 +23,7 @@ func main() {
 		if doUpload(newImages) {
 			fmt.Printf("Attempting to upload all %d images...\n", numNewImages)
 			// TODO: authenticate with Flickr & upload images
+			api.Authenticate()
 		}
 	}
 }
