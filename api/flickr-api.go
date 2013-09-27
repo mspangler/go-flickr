@@ -2,13 +2,15 @@ package api
 
 import (
 	"fmt"
-	"github.com/mspangler/go-flickr/oauth"
+	"github.com/mrjones/oauth"
 )
 
 func Authenticate() {
 
 	consumerKey := ""
 	consumerSecret := ""
+
+	fmt.Printf("Using key: %s and secret: %s\n", consumerKey, consumerSecret)
 
 	// TODO: validate key & secret
 
