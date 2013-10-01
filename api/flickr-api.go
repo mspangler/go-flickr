@@ -1,16 +1,26 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/mrjones/oauth"
+	"io/ioutil"
 )
+
+type Config struct {
+	Key         string
+	Secret      string
+	AccessToken string
+}
 
 func Authenticate() {
 
-	consumerKey := ""
-	consumerSecret := ""
+	config := unmarshallConfig()
 
-	fmt.Printf("Using key: %s and secret: %s\n", consumerKey, consumerSecret)
+	consumerKey := config.Key
+	consumerSecret := config.Secret
+
+	fmt.Printf("Using key: %s with secret: %s\n", consumerKey, consumerSecret)
 
 	// TODO: validate key & secret
 
@@ -43,4 +53,14 @@ func Authenticate() {
 	}
 
 	fmt.Println("Received access token: " + accessToken.Token)
+}
+
+func unmarshallConfig() Config {
+	configData, err := ioutil.ReadFile("config.json")
+	if err != nil {
+		panic(err)
+	}
+	var config Config
+	json.Unmarshal(configData, &config)
+	return config
 }

@@ -21,5 +21,3 @@ _testmain.go
 
 *.exe
 db
-key-secret
-access-token
